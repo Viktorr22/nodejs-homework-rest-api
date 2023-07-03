@@ -5,7 +5,7 @@ const updateById = async (req, res) => {
   const { contactId } = req.params;
   const result = await updateContact(contactId, req.body);
   if (!result) {
-    throw RequestError(404, "missing fields");
+    throw RequestError(400, "missing fields");
   }
   res.json(result);
 };
