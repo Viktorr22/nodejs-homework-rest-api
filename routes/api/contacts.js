@@ -7,10 +7,10 @@ const {
   updateById,
   removeById,
   patchFavorite,
-} = require("../../Controllers");
+} = require("../../controllers");
 const controllerWrapper = require("../../helpers/controllerWrapper");
-const validateBody = require("../../middlewares/validateBody");
-const isValidId = require("../../middlewares/isValidId");
+const { validateBody, isValidId, authenticate } = require("../../middlewares");
+
 const router = express.Router();
 
 const contactSchema = joi.object({
@@ -23,23 +23,35 @@ const contactUpdateFavoriteSchema = joi.object({
   favorite: joi.boolean().required().error(new Error("missing field favorite")),
 });
 
-router.get("/", controllerWrapper(getContacts));
+router.get("/", authenticate, controllerWrapper(getContacts));
 
-router.get("/:contactId", isValidId, controllerWrapper(getById));
+router.get("/:contactId", authenticate, isValidId, controllerWrapper(getById));
 
-router.post("/", validateBody(contactSchema), controllerWrapper(add));
+router.post(
+  "/",
+  authenticate,
+  validateBody(contactSchema),
+  controllerWrapper(add)
+);
 
 router.put(
   "/:contactId",
+  authenticate,
   isValidId,
   validateBody(contactSchema),
   controllerWrapper(updateById)
 );
 
-router.delete("/:contactId", isValidId, controllerWrapper(removeById));
+router.delete(
+  "/:contactId",
+  authenticate,
+  isValidId,
+  controllerWrapper(removeById)
+);
 
 router.patch(
   "/:contactId/favorite",
+  authenticate,
   isValidId,
   validateBody(contactUpdateFavoriteSchema),
   controllerWrapper(patchFavorite)
