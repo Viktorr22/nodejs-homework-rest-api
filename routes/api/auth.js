@@ -7,6 +7,8 @@ const {
   getCurrent,
   logout,
   updateAvatar,
+  verifyEmail,
+  resendVerifyEmail,
 } = require("../../controllers");
 const controllerWrapper = require("../../helpers/controllerWrapper");
 
@@ -16,6 +18,14 @@ router.post(
   "/register",
   validateBody(shemas.registerSchema),
   controllerWrapper(register)
+);
+
+router.get("/verify/:verificationToken", controllerWrapper(verifyEmail));
+
+router.post(
+  "/verify",
+  validateBody(shemas.emailSchema),
+  controllerWrapper(resendVerifyEmail)
 );
 
 router.post(
